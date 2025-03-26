@@ -13,7 +13,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function fetchMovies() {
         fetch(API_URL)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(movies => {
                 filmsList.innerHTML = "";
                 movies.forEach(movie => {
@@ -45,19 +50,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ tickets_sold: movie.tickets_sold + 1 })
-            }).then(() => {
-                movie.tickets_sold++;
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(updatedMovie => {
+                movie.tickets_sold = updatedMovie.tickets_sold;
                 loadMovieDetails(movie);
-            });
+            })
+            .catch(error => console.error("Error updating ticket count:", error));
         } else {
             alert("Sold Out!");
         }
     }
 
     function deleteMovie(movieId) {
-        fetch(`${API_URL}/${movieId}`, { method: "DELETE" })
-            .then(() => fetchMovies())
-            .catch(error => console.error("Error deleting movie:", error));
+        fetch(`${API_URL}/${movieId}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(() => fetchMovies())
+        .catch(error => console.error("Error deleting movie:", error));
     }
 
     fetchMovies();
