@@ -129,6 +129,16 @@ body {
     background: red;
     color: white;
     padding: 10px;
+    border-radius: 35px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.buy-ticket{
+    background: red;
+    color: white;
+    padding: 10px;
+    border-radius: 35px;
     border: none;
     cursor: pointer;
     margin-top: 10px;
