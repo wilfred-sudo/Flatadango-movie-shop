@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const movieTickets = document.getElementById("movie-tickets");
     const buyTicketButton = document.getElementById("buy-ticket");
     const deleteMovieButton = document.getElementById("delete-movie");
-    
+
     function fetchMovies() {
-        fetch("/http://localhost:3000/films/1")
+        fetch("http://localhost:5500/films")
             .then(response => response.json())
             .then(movies => {
                 filmsList.innerHTML = "";
@@ -21,24 +21,25 @@ document.addEventListener("DOMContentLoaded", () => {
                     li.addEventListener("click", () => loadMovieDetails(movie));
                     filmsList.appendChild(li);
                 });
-            });
+            })
+            .catch(error => console.error("Error fetching movies:", error));
     }
-    
+
     function loadMovieDetails(movie) {
         moviePoster.src = movie.poster;
         movieTitle.textContent = movie.title;
         movieDescription.textContent = movie.description;
-        movieRuntime.textContent = movie.runtime;
-        movieShowtime.textContent = movie.showtime;
-        movieTickets.textContent = movie.capacity - movie.tickets_sold;
-        
+        movieRuntime.textContent = `Runtime: ${movie.runtime} min`;
+        movieShowtime.textContent = `Showtime: ${movie.showtime}`;
+        movieTickets.textContent = `Tickets Available: ${movie.capacity - movie.tickets_sold}`;
+
         buyTicketButton.onclick = () => buyTicket(movie);
         deleteMovieButton.onclick = () => deleteMovie(movie.id);
     }
-    
+
     function buyTicket(movie) {
         if (movie.tickets_sold < movie.capacity) {
-            fetch(`/films/${movie.id}`, {
+            fetch(`http://localhost:5500/films/${movie.id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ tickets_sold: movie.tickets_sold + 1 })
@@ -50,11 +51,12 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Sold Out!");
         }
     }
-    
+
     function deleteMovie(movieId) {
-        fetch(`/films/${movieId}`, { method: "DELETE" })
-            .then(() => fetchMovies());
+        fetch(`http://localhost:5500/films/${movieId}`, { method: "DELETE" })
+            .then(() => fetchMovies())
+            .catch(error => console.error("Error deleting movie:", error));
     }
-    
+
     fetchMovies();
 });
