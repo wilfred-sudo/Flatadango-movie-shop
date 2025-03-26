@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const API_URL = "https://flatadango-movie-shop.onrender.com";
+    const API_URL = "https://flatadango-movie-shop.onrender.com/films";
 
     const filmsList = document.getElementById("films");
     const moviePoster = document.getElementById("movie-poster");
