@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const API_URL = "https://flatadango-movie-shop.onrender.com";
+
     const filmsList = document.getElementById("films");
     const moviePoster = document.getElementById("movie-poster");
     const movieTitle = document.getElementById("movie-title");
@@ -10,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const deleteMovieButton = document.getElementById("delete-movie");
 
     function fetchMovies() {
-        fetch("http://localhost:5500/films")
+        fetch(API_URL)
             .then(response => response.json())
             .then(movies => {
                 filmsList.innerHTML = "";
@@ -39,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function buyTicket(movie) {
         if (movie.tickets_sold < movie.capacity) {
-            fetch(`http://localhost:5500/films/${movie.id}`, {
+            fetch(`${API_URL}/${movie.id}`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ tickets_sold: movie.tickets_sold + 1 })
@@ -53,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function deleteMovie(movieId) {
-        fetch(`http://localhost:5500/films/${movieId}`, { method: "DELETE" })
+        fetch(`${API_URL}/${movieId}`, { method: "DELETE" })
             .then(() => fetchMovies())
             .catch(error => console.error("Error deleting movie:", error));
     }
